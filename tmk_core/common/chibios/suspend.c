@@ -10,6 +10,9 @@
 #include "host.h"
 #include "backlight.h"
 #include "suspend.h"
+#ifdef CONFIG_H
+    #include CONFIG_H
+#endif
 
 void suspend_idle(uint8_t time) {
 	// TODO: this is not used anywhere - what units is 'time' in?

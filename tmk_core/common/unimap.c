@@ -6,6 +6,9 @@
 #   include <avr/pgmspace.h>
 #endif
 
+#ifdef CONFIG_H
+    #include CONFIG_H
+#endif
 
 /* Keymapping with 16bit action codes */
 extern const action_t actionmaps[][UNIMAP_ROWS][UNIMAP_COLS];

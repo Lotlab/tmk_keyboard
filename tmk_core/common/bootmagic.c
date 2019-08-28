@@ -11,7 +11,9 @@
 #include "eeconfig.h"
 #include "bootmagic.h"
 #include "hook.h"
-
+#ifdef CONFIG_H
+    #include CONFIG_H
+#endif
 keymap_config_t keymap_config;
 
 void bootmagic(void)

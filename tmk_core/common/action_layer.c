@@ -11,6 +11,10 @@
 #include "nodebug.h"
 #endif
 
+#ifdef CONFIG_H
+    #include CONFIG_H
+#endif
+
 
 /* 
  * Default Layer State
