@@ -140,7 +140,7 @@ CFLAGS += -Wa,-adhlns=$(@:%.o=%.lst)
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
 ifdef CONFIG_H
-	CFLAGS += -DCONFIG_H=\"$(CONFIG_H)\"
+	CFLAGS += -DCONFIG_H_FILE=\"$(CONFIG_H)\"
 #    CFLAGS += -include $(CONFIG_H)
 endif
 
@@ -175,7 +175,7 @@ CPPFLAGS += -Wa,-adhlns=$(@:%.o=%.lst)
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 #CPPFLAGS += $(CSTANDARD)
 ifdef CONFIG_H
-	CPPFLAGS += -DCONFIG_H=\"$(CONFIG_H)\"
+	CPPFLAGS += -DCONFIG_H_FILE=\"$(CONFIG_H)\"
 #    CPPFLAGS += -include $(CONFIG_H)
 endif
 

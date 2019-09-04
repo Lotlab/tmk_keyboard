@@ -10,8 +10,8 @@
 #include "host.h"
 #include "backlight.h"
 #include "suspend.h"
-#ifdef CONFIG_H
-    #include CONFIG_H
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
 #endif
 
 void suspend_idle(uint8_t time) {

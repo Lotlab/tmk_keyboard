@@ -31,8 +31,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "eeconfig.h"
 #include "backlight.h"
 #include "hook.h"
-#ifdef CONFIG_H
-    #include CONFIG_H
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
 #endif
 #ifdef MOUSEKEY_ENABLE
 #   include "mousekey.h"
