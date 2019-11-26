@@ -1,4 +1,7 @@
 /* TODO */
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
+#endif
 
 #include "ch.h"
 #include "hal.h"
@@ -10,9 +13,6 @@
 #include "host.h"
 #include "backlight.h"
 #include "suspend.h"
-#ifdef CONFIG_H_FILE
-    #include CONFIG_H_FILE
-#endif
 
 void suspend_idle(uint8_t time) {
 	// TODO: this is not used anywhere - what units is 'time' in?

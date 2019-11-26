@@ -1,4 +1,7 @@
 #include <stdint.h>
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
+#endif
 #include "keyboard.h"
 #include "action.h"
 #include "util.h"
@@ -9,10 +12,6 @@
 #include "debug.h"
 #else
 #include "nodebug.h"
-#endif
-
-#ifdef CONFIG_H_FILE
-    #include CONFIG_H_FILE
 #endif
 
 

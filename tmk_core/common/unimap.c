@@ -1,13 +1,13 @@
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
+#endif
+
 #include "keyboard.h"
 #include "action.h"
 #include "unimap.h"
 #include "print.h"
 #if defined(__AVR__)
 #   include <avr/pgmspace.h>
-#endif
-
-#ifdef CONFIG_H_FILE
-    #include CONFIG_H_FILE
 #endif
 
 /* Keymapping with 16bit action codes */

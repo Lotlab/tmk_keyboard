@@ -14,6 +14,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
+#endif
+
 #include "keymap.h"
 #include "report.h"
 #include "keycode.h"
@@ -29,10 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef BOOTMAGIC_ENABLE
 extern keymap_config_t keymap_config;
-#endif
-
-#ifdef CONFIG_H_FILE
-    #include CONFIG_H_FILE
 #endif
 
 static action_t keycode_to_action(uint8_t keycode);

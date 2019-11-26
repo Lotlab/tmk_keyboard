@@ -15,6 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <stdint.h>
+#ifdef CONFIG_H_FILE
+    #include CONFIG_H_FILE
+#endif
 #include "keyboard.h"
 #include "matrix.h"
 #include "keymap.h"
@@ -31,9 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "eeconfig.h"
 #include "backlight.h"
 #include "hook.h"
-#ifdef CONFIG_H_FILE
-    #include CONFIG_H_FILE
-#endif
 #ifdef MOUSEKEY_ENABLE
 #   include "mousekey.h"
 #endif
