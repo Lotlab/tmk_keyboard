@@ -144,7 +144,7 @@ static void command_common_help(void)
     );
 }
 
-#ifdef BOOTMAGIC_ENABLE
+#if defined(BOOTMAGIC_ENABLE) && !defined(NO_PRINT)
 static void print_eeconfig(void)
 {
     print("default_layer: "); print_dec(eeconfig_read_default_layer()); print("\n");
@@ -201,7 +201,7 @@ static bool command_common(uint8_t code)
             sleep_led_test = !sleep_led_test;
             break;
 #endif
-#ifdef BOOTMAGIC_ENABLE
+#if defined(BOOTMAGIC_ENABLE) && !defined(NO_PRINT)
         case KC_E:
             print("eeconfig:\n");
             print_eeconfig();
