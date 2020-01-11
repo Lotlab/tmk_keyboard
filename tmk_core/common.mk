@@ -58,6 +58,14 @@ else
     endif
 endif
 
+ifeq (yes,$(strip $(NO_DEBUG)))
+    OPT_DEFS += -DNO_DEBUG
+endif
+
+ifeq (yes,$(strip $(NO_PRINT)))
+    OPT_DEFS += -DNO_PRINT
+endif
+
 ifeq (yes,$(strip $(COMMAND_ENABLE)))
     SRC += $(COMMON_DIR)/command.c
     OPT_DEFS += -DCOMMAND_ENABLE
@@ -93,6 +101,8 @@ ifeq (yes,$(strip $(KEYMAP_SECTION_ENABLE)))
 	EXTRALDFLAGS = -Wl,-L$(TMK_DIR),-Tldscript_keymap_avr35.x
     else ifeq ($(strip $(MCU)),atmega32u4)
 	EXTRALDFLAGS = -Wl,-L$(TMK_DIR),-Tldscript_keymap_avr5.x
+    else ifeq ($(strip $(MCU)),at90usb1286)
+	EXTRALDFLAGS = -Wl,-L$(TMK_DIR),-Tldscript_keymap_avr51.x
     else
 	EXTRALDFLAGS = $(error no ldscript for keymap section)
     endif
