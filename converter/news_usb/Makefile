@@ -8,10 +8,9 @@ TMK_DIR = ../../tmk_core
 TARGET_DIR = .
 
 # keyboard dependent files
-SRC =	keymap.c \
-	matrix.c \
-	led.c \
-	news.c
+SRC =	matrix.c \
+	tone.c \
+	protocol/serial_uart.c
 
 CONFIG_H = config.h
 
@@ -71,12 +70,34 @@ OPT_DEFS += -DBOOTLOADER_SIZE=4096
 # Build Options
 #   *Comment out* to disable the options.
 #
-BOOTMAGIC_ENABLE = yes	# Virtual DIP switch configuration(+1000)
+#BOOTMAGIC_ENABLE = yes	# Virtual DIP switch configuration(+1000)
 MOUSEKEY_ENABLE = yes	# Mouse keys(+5000)
 EXTRAKEY_ENABLE = yes	# Audio control and System control(+600)
 CONSOLE_ENABLE = yes    # Console for debug
 COMMAND_ENABLE = yes    # Commands for debug and configuration
 #NKRO_ENABLE = yes	# USB Nkey Rollover(+500)
+
+KEYMAP_SECTION_ENABLE ?= yes
+UNIMAP_ENABLE ?= yes
+
+
+#
+# Keymap file
+#
+ifdef UNIMAP_ENABLE
+    KEYMAP_FILE = unimap
+else
+    ifdef ACTIONMAP_ENABLE
+	KEYMAP_FILE = actionmap
+    else
+	KEYMAP_FILE = keymap
+    endif
+endif
+ifdef KEYMAP
+    SRC := $(KEYMAP_FILE)_$(KEYMAP).c $(SRC)
+else
+    SRC := $(KEYMAP_FILE)_plain.c $(SRC)
+endif
 
 
 # Search Path

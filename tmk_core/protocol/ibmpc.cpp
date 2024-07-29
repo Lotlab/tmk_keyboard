@@ -140,6 +140,15 @@ RETRY:
     WAIT(data_hi, 300, 7);
     WAIT(clock_hi, 300, 8);
 
+#ifdef SIEMENS_PCD_SUPPORT
+    // inhibit - https://github.com/tmk/tmk_keyboard/issues/747
+    if (protocol & IBMPC_PROTOCOL_AT) {
+        wait_us(15);
+        clock_lo();
+        wait_us(150);
+    }
+#endif
+
     // clear buffer to get response correctly
     host_isr_clear();
 
@@ -154,6 +163,7 @@ ERROR:
         goto RETRY;
     }
 
+    isr_debug = isr_state;
     error |= IBMPC_ERR_SEND;
     inhibit();
     wait_ms(2);
@@ -203,7 +213,7 @@ void IBMPC::host_isr_clear(void)
     ringbuf_reset();
 }
 
-inline void IBMPC::isr(void)
+void IBMPC::isr(void)
 {
     uint8_t dbit;
     dbit = IBMPC_DATA_PIN&(1<<data_bit);
@@ -217,7 +227,7 @@ inline void IBMPC::isr(void)
         timer_start = t;
     } else {
         // This gives 2.0ms at least before timeout
-        if ((uint8_t)(t - timer_start) >= 3) {
+        if ((uint8_t)(t - timer_start) >= 5) {
             isr_debug = isr_state;
             error = IBMPC_ERR_TIMEOUT;
             goto ERROR;
@@ -250,13 +260,12 @@ inline void IBMPC::isr(void)
     //       x  x  x  x    x  x  x  x | *1  0  0  0    0  0  0  0     midway(8 bits received)
     //      b6 b5 b4 b3   b2 b1 b0  1 |  0 *1  0  0    0  0  0  0     XT_IBM-midway ^1
     //      b7 b6 b5 b4   b3 b2 b1 b0 |  0 *1  0  0    0  0  0  0     AT-midway ^1
-    //      b7 b6 b5 b4   b3 b2 b1 b0 |  1 *1  0  0    0  0  0  0     XT_Clone-done ^3
-    //      b6 b5 b4 b3   b2 b1 b0  1 |  1 *1  0  0    0  0  0  0     XT_IBM-error ^3
+    //      b7 b6 b5 b4   b3 b2 b1 b0 |  1 *1  0  0    0  0  0  0     XT_Clone-done
     //      pr b7 b6 b5   b4 b3 b2 b1 |  0  0 *1  0    0  0  0  0     AT-midway[b0=0]
     //      b7 b6 b5 b4   b3 b2 b1 b0 |  1  0 *1  0    0  0  0  0     XT_IBM-done ^2
     //      pr b7 b6 b5   b4 b3 b2 b1 |  1  0 *1  0    0  0  0  0     AT-midway[b0=1] ^2
-    //      b7 b6 b5 b4   b3 b2 b1 b0 |  1  1 *1  0    0  0  0  0     XT_IBM-error-done
     //       x  x  x  x    x  x  x  x |  0  1 *1  0    0  0  0  0     illegal
+    //       x  x  x  x    x  x  x  x |  1  1 *1  0    0  0  0  0     illegal
     //      st pr b7 b6   b5 b4 b3 b2 | b1 b0  0 *1    0  0  0  0     AT-done
     //       x  x  x  x    x  x  x  x |  x  x  1 *1    0  0  0  0     illegal
     //                                all other states than above     illegal
@@ -272,34 +281,11 @@ inline void IBMPC::isr(void)
             // midway
             goto NEXT;
             break;
-        case 0b11000000:    // ^3
-            {
-                uint8_t us = 100;
-                // wait for rising and falling edge of b7 of XT_IBM
-                if (!protocol) {
-                    while (!(IBMPC_CLOCK_PIN & clock_mask) && us) { wait_us(1); us--; }
-                    while ( (IBMPC_CLOCK_PIN & clock_mask) && us) { wait_us(1); us--; }
-                } else if (protocol == IBMPC_PROTOCOL_XT_CLONE) {
-                    us = 0;
-                }
-
-                if (us) {
-                    // XT_IBM-error: read start(0) as 1
-                    goto NEXT;
-                } else {
-                    // XT_Clone-done
-                    isr_debug = isr_state;
-                    isr_state = isr_state>>8;
-                    protocol = IBMPC_PROTOCOL_XT_CLONE;
-                    goto DONE;
-                }
-            }
-            break;
-        case 0b11100000:
-            // XT_IBM-error-done
+        case 0b11000000:
+            // XT_Clone-done
             isr_debug = isr_state;
             isr_state = isr_state>>8;
-            protocol = IBMPC_PROTOCOL_XT_ERROR;
+            protocol = IBMPC_PROTOCOL_XT_CLONE;
             goto DONE;
             break;
         case 0b10100000:    // ^2
@@ -368,6 +354,7 @@ inline void IBMPC::isr(void)
             goto DONE;
             break;
         case 0b01100000:
+        case 0b11100000:
         case 0b00110000:
         case 0b10110000:
         case 0b01110000:
@@ -382,6 +369,15 @@ inline void IBMPC::isr(void)
     }
 
 DONE:
+#ifdef SIEMENS_PCD_SUPPORT
+    // inhibit - https://github.com/tmk/tmk_keyboard/issues/747
+    if (protocol & IBMPC_PROTOCOL_AT) {
+        clock_lo();
+        wait_us(150);
+        clock_hi();
+    }
+#endif
+
     // store data
     ringbuf_put(isr_state & 0xFF);
     if (ringbuf_is_full()) {

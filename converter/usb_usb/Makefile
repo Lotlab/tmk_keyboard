@@ -121,8 +121,15 @@ else
 endif
 ifdef KEYMAP
     SRC := $(KEYMAP_FILE)_$(KEYMAP).c $(SRC)
+    TARGET := $(TARGET)_$(KEYMAP)
 else
     SRC := $(KEYMAP_FILE).c $(SRC)
+endif
+
+# Prefix key for unimap_TaranVH.c
+ifdef PREFIX_KEY
+    OPT_DEFS += -DPREFIX_KEY=KC_$(PREFIX_KEY)
+    TARGET := $(TARGET)_$(PREFIX_KEY)
 endif
 
 CONFIG_H ?= config.h

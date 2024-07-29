@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define VENDOR_ID       0xFEED
 #define PRODUCT_ID      0x005B
-#define DEVICE_VER      0x0814
-#define MANUFACTURER    t.m.k.
+#define DEVICE_VER      0x0815
+#define MANUFACTURER    TMK
 #define PRODUCT         USB to USB keyboard converter
 
 
@@ -52,5 +52,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Mechanical locking support. */
 #define LOCKING_SUPPORT_ENABLE
 #define LOCKING_RESYNC_ENABLE
+
+// power saving during suspended without remote wakeup disabled
+#define UHS2_POWER_SAVING
 
 #endif
